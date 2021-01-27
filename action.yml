@@ -32,12 +32,5 @@ outputs:
     description: the generated changelog if outputFile was not provided
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.token }}
-    - ${{ inputs.outputFile }}
-    - ${{ inputs.since }}
-    - ${{ inputs.nextTag }}
-    - ${{ inputs.filter }}
-    - ${{ inputs.labels }}
+  using: node12
+  main: index.js
