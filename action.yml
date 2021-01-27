@@ -12,8 +12,13 @@ inputs:
     required: false
 
   since:
-    description: 'Since tag'
+    description: 'Tag to generate since. Uses since latest release if not provided'
     required: false
+  
+  complete:
+    description: 'Whether to generate the complete changelog. This is not recommended as it will fetch all tags and all pull requests. Complete and since cannot be used together.'
+    required: true
+    default: 'false'
 
   nextTag:
     description: 'The tag of the next version'
@@ -26,6 +31,11 @@ inputs:
   labels:
     description: 'Group Labels'
     required: false
+
+  includeUntagged:
+    description: 'Whether to include untagged PRs. Defaults to true.'
+    required: true
+    default: 'true'
 
 outputs:
   changelog:
