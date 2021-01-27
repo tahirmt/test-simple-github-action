@@ -2,42 +2,42 @@
 name: 'Changelog Generator'
 description: 'Generates changelog on a pull request automatically'
 inputs:
-	token:
+  token:
     description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
-		required: true
+    required: true
     default: ${{ github.token }}
 
-	outputFile:
-		description: 'The output file. Use output if not provided'
-		required: false
+  outputFile:
+    description: 'The output file. Use output if not provided'
+    required: false
 
-	since:
-		description: 'Since tag'
-		required: false
+  since:
+    description: 'Since tag'
+    required: false
 
-	nextTag:
-		description: 'The tag of the next version'
-		required: false
+  nextTag:
+    description: 'The tag of the next version'
+    required: false
 
-	filter:
-		description: 'Filter regex'
-		required: false
-	
-	labels:
-		description: 'Group Labels'
-		required: false
+  filter:
+    description: 'Filter regex'
+    required: false
+  
+  labels:
+    description: 'Group Labels'
+    required: false
 
 outputs:
-	changelog:
-		description: the generated changelog if outputFile was not provided
+  changelog:
+    description: the generated changelog if outputFile was not provided
 
 runs:
-	using: 'docker'
-	image: 'Dockerfile'
-	args:
-		- ${{ inputs.token }}
-		- ${{ inputs.outputFile }}
-		- ${{ inputs.since }}
-		- ${{ inputs.nextTag }}
-		- ${{ inputs.filter }}
-		- ${{ inputs.labels }}
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.token }}
+    - ${{ inputs.outputFile }}
+    - ${{ inputs.since }}
+    - ${{ inputs.nextTag }}
+    - ${{ inputs.filter }}
+    - ${{ inputs.labels }}
