@@ -39,8 +39,87 @@ inputs:
 
 outputs:
   changelog:
-    description: the generated changelog if outputFile was not provided
+    description: the generated changelog
+    value: ${{ steps.generate.outputs.changelog }}
 
 runs:
-  using: node12
-  main: index.js
+  using: "composite"
+  steps:
+    - id: generate
+      run: |
+        echo "action path ${{ github.action_path }}"
+        ls ${{ github.action_path }}
+
+        repository=${{ github.repository }}
+        token=${{ inputs.token }}
+        outputFile=${{ inputs.outputFile }}
+        since=${{ inputs.since }}
+        complete=${{ inputs.complete }}
+        nextTag=${{ inputs.nextTag }}
+        filter=${{ inputs.filter }}
+        labels=${{ inputs.labels }}
+        includeUntagged=${{ inputs.includeUntagged }}
+
+        command=""
+        
+        if [ -z "$repository" ]; then
+          echo "Repository cannot be empty"
+          exit 1
+        else
+          command+=" --repository=$repository"
+        fi
+
+        if [ -z "$token" ]; then
+          echo "token is empty"
+        else
+          command+=" --token=$token"
+        fi
+
+        if [ "$complete" == "true" ]; then
+          command+=" --type=complete"
+        else
+          if [ -z "$since" ]; then
+            echo "since is empty"
+          else
+            command+=" --type=sinceTag"
+            command+=" --tag=$since"
+          fi
+        fi
+
+        if [ -z "$nextTag" ]; then
+          echo "nextTag is empty"
+        else
+          command+=" --next-tag=$nextTag"
+        fi
+
+        if [ -z "$outputFile" ]; then
+          echo "outputFile is empty"
+        else
+          command+=" --output=$outputFile"
+        fi
+
+        if [ -z "$filter" ]; then
+          echo "filter is empty"
+        else
+          command+=" --filter-reg-ex=$filter"
+        fi
+        
+        if [ -z "$labels" ]; then
+          echo "labels is empty"
+        else
+          command+=" --labels=$labels"
+        fi
+
+        if [ -z "$includeUntagged" ]; then
+          echo "includeUntagged is empty"
+        else
+          command+=" --include-untagged=$includeUntagged"
+        fi
+
+        command+=" --log-console=true"
+
+        changelog=$(${{ github.action_path }}/changelog generate $command | base64)
+
+        echo "::set-output name=changelog::$changelog"
+      
+      shell: bash
